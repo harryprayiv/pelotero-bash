@@ -1,0 +1,84 @@
+cabal-version: 3.6
+-- Instructions on how to write this file are in the Cabal
+-- documentation, which can be found here:
+--   http://haskell.org/cabal/release/cabal-latest/doc/users-guide/
+
+name: pelotero
+license: Apache-2.0
+version: 0.1.0.0
+
+-- executable fantasy
+--   hs-source-dirs: src/fantasy
+--   main-is: fantasy.hs
+--   other-modules: HeadToHead, PlayEvent, Baseball
+--   build-depends: base, containers, time, random 
+
+executable scraper
+  hs-source-dirs: src/mlb_api_scraper
+  main-is: Main.hs
+  other-modules: MLBApiScraper, ActivePlayersScraper, FlattenDay
+  build-depends: 
+      base  >= 4.7 && < 5
+    , filepath
+    , http-client
+    , http-client-tls
+    , aeson
+    , time
+    , bytestring
+    , directory
+    , transformers
+    , text
+    , lens-aeson
+    , aeson-pretty
+    , lens
+    , unordered-containers
+    , vector
+    , containers
+
+executable stats
+  hs-source-dirs: src/statScraper
+  main-is: Main.hs
+  other-modules: StatScraper
+  build-depends: 
+      base  >= 4.7 && < 5
+    , http-conduit
+    , bytestring
+    , text
+    , aeson
+    , time
+    , directory
+    , optparse-applicative
+    , formatting
+    , vector
+    , unordered-containers
+
+executable scrapeSix
+  hs-source-dirs: src/scraperV6
+  main-is: Main.hs
+  -- other-modules: StatScraper
+  build-depends: 
+      base  >= 4.7 && < 5
+    , wreq  
+    , http-conduit
+    , bytestring
+    , text
+    , aeson
+    , time
+    , aeson-pretty
+    , lens-aeson
+    , directory
+    , optparse-applicative
+    , formatting
+    , vector
+    , unordered-containers
+
+
+-- executable pelotero_tui
+--   hs-source-dirs: src/fantasy
+--   main-is: pelotero_tui.hs
+--   build-depends: base, containers, time 
+
+-- executable mlb_scraper
+--   hs-source-dirs: src/mlb_scraper
+--   main-is: scraper.hs
+--   build-depends: base, containers, time, random, http-conduit, html-conduit, http-client-tls, regex-tdfa
