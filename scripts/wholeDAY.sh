@@ -58,23 +58,40 @@ while [ "$current_ts" -le "$end_ts" ]; do
   # Initialize an empty object for storing the day's summed data
   day_summed_data="{}"
 
-  for game_id in $game_ids; do
-    # Check the game status
-    game_status_json=$(curl -s "https://statsapi.mlb.com//api/v1.1/game/$game_id/feed/live")
-    game_status=$(echo "$game_status_json" | jq -r '.gameData.status.codedGameState')
+  declare -A incomplete_games=()
 
-    # Download and compress game data for the current date if the game status is "F"
-    if [ "$game_status" == "F" ]; then
+  for game_id in $game_ids; do
+      # Check the game status
+      game_status_json=$(curl -s "https://statsapi.mlb.com//api/v1.1/game/$game_id/feed/live")
+      game_status=$(echo "$game_status_json" | jq -r '.gameData.status.codedGameState')
+
+      # Download and compress game data for the current date if the game status is "F"
+      if [ "$game_status" == "F" ]; then
       game_data=$(curl -s "http://statsapi.mlb.com/api/v1/game/$game_id/boxscore")
       compressed_data=$(flattenGameData "$game_data" "" "$game_id")
 
       # Merge the compressed game data with the day's summed data
       day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "$compressed_data"))
+    else
+       incomplete_games["$game_id"]="$game_status"
     fi
-  done
+done
 
-  # Generate the checksum for the content using SHA-256
-  checksum=$(echo "$day_summed_data" | sha256sum | cut -d ' ' -f 1)
+# Generate JSON string from the incomplete_games associative array
+incomplete_json="{"
+first=1
+for key in "${!incomplete_games[@]}"; do
+    if [ "$first" -ne 1 ]; then
+        incomplete_json+=","
+    fi
+    incomplete_json+="\"$key\":\"${incomplete_games[$key]}\""
+    first=0
+done
+incomplete_json+="}"
+day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "{\"incomplete\": $incomplete_json}"))
+
+# Generate the checksum for the content using SHA-256
+checksum=$(echo "$day_summed_data" | sha256sum | cut -d ' ' -f 1)
 
   # Append the checksum to the JSON content
   day_summed_data=$(echo "$day_summed_data" | jq --arg checksum "$checksum" '. + {checksum: $checksum}')
