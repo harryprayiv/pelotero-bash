@@ -52,53 +52,59 @@ while [ "$current_ts" -le "$end_ts" ]; do
   api_url="https://statsapi.mlb.com/api/v1/schedule/games/?language=en&sportId=1&startDate=$current_date&endDate=$current_date"
   game_data_json=$(curl -s "$api_url")
 
-  # Extract game IDs from the JSON file
-  game_ids=$(echo "$game_data_json" | jq '.dates[0].games[].gamePk' | tr '\n' ' ')
+  # Check if there are games for the current date
+  has_games=$(echo "$game_data_json" | jq '.dates[0].games != null')
 
-  # Initialize an empty object for storing the day's summed data
-  day_summed_data="{}"
+  if [ "$has_games" == "true" ]; then
+    # Extract game IDs from the JSON file
+    game_ids=$(echo "$game_data_json" | jq '.dates[0].games[].gamePk' | tr '\n' ' ')
 
-  declare -A incomplete_games=()
+    # Initialize an empty object for storing the day's summed data
+    day_summed_data="{}"
+    declare -A incomplete_games=()
 
-  for game_id in $game_ids; do
+    for game_id in $game_ids; do
       # Check the game status
       game_status_json=$(curl -s "https://statsapi.mlb.com//api/v1.1/game/$game_id/feed/live")
       game_status=$(echo "$game_status_json" | jq -r '.gameData.status.codedGameState')
 
       # Download and compress game data for the current date if the game status is "F"
       if [ "$game_status" == "F" ]; then
-      game_data=$(curl -s "http://statsapi.mlb.com/api/v1/game/$game_id/boxscore")
-      compressed_data=$(flattenGameData "$game_data" "" "$game_id")
+        game_data=$(curl -s "http://statsapi.mlb.com/api/v1/game/$game_id/boxscore")
+        compressed_data=$(flattenGameData "$game_data" "" "$game_id")
 
-      # Merge the compressed game data with the day's summed data
-      day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "$compressed_data"))
-    else
-       incomplete_games["$game_id"]="$game_status"
-    fi
-done
+        # Merge the compressed game data with the day's summed data
+        day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "$compressed_data"))
+      else
+        incomplete_games["$game_id"]="$game_status"
+      fi
+    done
 
-# Generate JSON string from the incomplete_games associative array
-incomplete_json="{"
-first=1
-for key in "${!incomplete_games[@]}"; do
-    if [ "$first" -ne 1 ]; then
+    # Generate JSON string from the incomplete_games associative array
+    incomplete_json="{"
+    first=1
+    for key in "${!incomplete_games[@]}"; do
+      if [ "$first" -ne 1 ]; then
         incomplete_json+=","
-    fi
-    incomplete_json+="\"$key\":\"${incomplete_games[$key]}\""
-    first=0
-done
-incomplete_json+="}"
-day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "{\"incomplete\": $incomplete_json}"))
+      fi
+      incomplete_json+="\"$key\":\"${incomplete_games[$key]}\""
+      first=0
+    done
+    incomplete_json+="}"
+    day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "{\"incomplete\": $incomplete_json}"))
 
-# Generate the checksum for the content using SHA-256
-checksum=$(echo "$day_summed_data" | sha256sum | cut -d ' ' -f 1)
+    # Generate the checksum for the content using SHA-256
+    checksum=$(echo "$day_summed_data" | sha256sum | cut -d ' ' -f 1)
 
-  # Append the checksum to the JSON content
-  day_summed_data=$(echo "$day_summed_data" | jq --arg checksum "$checksum" '. + {checksum: $checksum}')
+    # Append the checksum to the JSON content
+    day_summed_data=$(echo "$day_summed_data" | jq --arg checksum "$checksum" '. + {checksum: $checksum}')
 
-  # Save the day's summed data in the current date's folder without checksum in the filename
-  summed_file="$output_folder/$(date -d "$current_date" +%Y_%m_%d)_SUMMED.json"
-  echo "$day_summed_data" > "$summed_file"
+    # Save the day's summed data in the current date's folder without checksum in the filename
+    summed_file="$output_folder/$(date -d "$current_date" +%Y_%m_%d)_SUMMED.json"
+    echo "$day_summed_data" > "$summed_file"
+  else
+    echo "No games found for $current_date"
+  fi
 
   # Move to the next day
   current_date=$(date -I -d "$current_date + 1 day")
