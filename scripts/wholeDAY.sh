@@ -93,15 +93,29 @@ while [ "$current_ts" -le "$end_ts" ]; do
     incomplete_json+="}"
     day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "{\"incomplete\": $incomplete_json}"))
 
+    # Define the output filename
+    summed_file="$output_folder/$(date -d "$current_date" +%Y_%m_%d)_SUMMED.json"
+
     # Generate the checksum for the content using SHA-256
     checksum=$(echo "$day_summed_data" | sha256sum | cut -d ' ' -f 1)
+
+    # Check if the file already exists
+    if [ -f "$summed_file" ]; then
+        # Extract the checksum from the existing file
+        existing_checksum=$(jq -r '.checksum' "$summed_file")
+
+        # Check if the existing checksum matches the new checksum
+        if [ "$existing_checksum" == "$checksum" ]; then
+            echo "Data for $current_date has not changed, skipping..."
+            continue
+        fi
+    fi
 
     # Append the checksum to the JSON content
     day_summed_data=$(echo "$day_summed_data" | jq --arg checksum "$checksum" '. + {checksum: $checksum}')
 
-    # Save the day's summed data in the current date's folder without checksum in the filename
-    summed_file="$output_folder/$(date -d "$current_date" +%Y_%m_%d)_SUMMED.json"
     echo "$day_summed_data" > "$summed_file"
+
   else
     echo "No games found for $current_date"
   fi
