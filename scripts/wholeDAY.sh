@@ -107,6 +107,10 @@ while [ "$current_ts" -le "$end_ts" ]; do
         # Check if the existing checksum matches the new checksum
         if [ "$existing_checksum" == "$checksum" ]; then
             echo "Data for $current_date has not changed, skipping..."
+            
+            # Move to the next day
+            current_date=$(date -I -d "$current_date + 1 day")
+            current_ts=$(date -d "$current_date" +%s)
             continue
         fi
     fi
