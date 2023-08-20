@@ -61,37 +61,38 @@ while [ "$current_ts" -le "$end_ts" ]; do
 
     # Initialize an empty object for storing the day's summed data
     day_summed_data="{}"
-    declare -A incomplete_games=()
+    declare -A games_status=()
 
     for game_id in $game_ids; do
       # Check the game status
       game_status_json=$(curl -s "https://statsapi.mlb.com//api/v1.1/game/$game_id/feed/live")
       game_status=$(echo "$game_status_json" | jq -r '.gameData.status.codedGameState')
 
-      # Download and compress game data for the current date if the game status is "F"
+      # Download and compress game data for the current date
       if [ "$game_status" == "F" ]; then
         game_data=$(curl -s "http://statsapi.mlb.com/api/v1/game/$game_id/boxscore")
         compressed_data=$(flattenGameData "$game_data" "" "$game_id")
 
         # Merge the compressed game data with the day's summed data
         day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "$compressed_data"))
-      else
-        incomplete_games["$game_id"]="$game_status"
       fi
+
+      # Store the game status in the games_status associative array
+      games_status["$game_id"]="$game_status"
     done
 
-    # Generate JSON string from the incomplete_games associative array
-    incomplete_json="{"
+    # Generate JSON string from the games_status associative array
+    games_status_json="{"
     first=1
-    for key in "${!incomplete_games[@]}"; do
+    for key in "${!games_status[@]}"; do
       if [ "$first" -ne 1 ]; then
-        incomplete_json+=","
+        games_status_json+=","
       fi
-      incomplete_json+="\"$key\":\"${incomplete_games[$key]}\""
+      games_status_json+="\"$key\":\"${games_status[$key]}\""
       first=0
     done
-    incomplete_json+="}"
-    day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "{\"incomplete\": $incomplete_json}"))
+    games_status_json+="}"
+    day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "{\"games\": $games_status_json}"))
 
     # Define the output filename
     summed_file="$output_folder/$(date -d "$current_date" +%Y_%m_%d)_SUMMED.json"
