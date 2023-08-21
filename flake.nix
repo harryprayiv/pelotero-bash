@@ -1,40 +1,77 @@
 {
-  # This is a template created by `hix init`
   inputs = {
-    haskell-nix.url = "github:input-output-hk/haskell.nix";
-    nixpkgs.follows = "haskell-nix/nixpkgs-unstable";
+    purs-nix.url = "github:purs-nix/purs-nix/ps-0.15";
+    nixpkgs.follows = "purs-nix/nixpkgs";
     utils.url = "github:ursi/flake-utils";
-    flake-compat = {
-      url = "github:edolstra/flake-compat";
+    ps-tools.follows = "purs-nix/ps-tools";
+    npmlock2nix = {
       flake = false;
-    };
-    CHaP = {
-      url = "github:input-output-hk/cardano-haskell-packages?ref=repo";
-      flake = false;
+      url = "github:nix-community/npmlock2nix";
     };
   };
 
-  outputs = { self, utils, CHaP, nixpkgs, haskell-nix, ... }@inputs:
+  outputs = {
+    self,
+    utils,
+    nixpkgs,
+    ...
+  } @ inputs: let
+    systems = ["x86_64-linux"];
+    pkgs = nixpkgs.legacyPackages.x86_64-linux;
+    npmlock2nix = (import inputs.npmlock2nix {inherit pkgs;}).v1;
+  in
     utils.apply-systems
-      {
-        inherit inputs;
-        # TODO support additional systems
-        #  right now we can't afford to test every other system
-        systems = [ "x86_64-linux" "aarch64-linux" ];
-        overlays = [ inputs.haskell-nix.overlay ];
-      }
-      ({ pkgs, system, ... }:
-        let
-          hixProject = pkgs.haskell-nix.hix.project {
-            src = ./.;
-            evalSystem = "x86_64-linux";
-          };
-          flake = hixProject.flake { };
-        in
-        # Flake definition follows hello.cabal
-        flake // {
-          legacyPackages = pkgs;
-        });
+    {inherit inputs systems;}
+    ({
+      system,
+      pkgs,
+      ...
+    }: let
+      purs-nix = inputs.purs-nix {inherit system;};
+      ps =
+        purs-nix.purs
+        {
+          # Project dir (src, test)
+          dir = ./.;
+          # Dependencies
+          dependencies = with purs-nix.ps-pkgs; [
+            prelude
+            console
+            effect
+            halogen
+            argonaut
+            argonaut-codecs
+            aff
+            # halogen-select
+            affjax
+          ];
+          # FFI dependencies
+          # foreign.Foreign.JSON.node_modules = with purs-nix.ps-pkgs; [ foreign-generic ];
+        };
+      ps-tools = inputs.ps-tools.legacyPackages.${system};
+      ps-command = ps.command {};
+    in {
+      # packages.default = ps.output { };
+      packages = with ps; {
+        default = app {name = "fantasyDraft";};
+        bundle = bundle {};
+        output = output {};
+      };
+
+      devShells.default =
+        pkgs.mkShell
+        {
+          packages = with pkgs; [
+            ps-command
+            ps-tools.for-0_15.purescript-language-server
+            purs-nix.esbuild
+            purs-nix.purescript
+            nodejs
+            spago
+            yarn2nix
+          ];
+        };
+    });
 
   # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {
@@ -44,19 +81,16 @@
     extra-substituters = [
       "https://klarkc.cachix.org?priority=99"
       "https://cache.iog.io"
-      "https://iohk.cachix.org"
       "https://cache.zw3rk.com"
       "https://cache.nixos.org"
-      "https://public-plutonomicon.cachix.org"
+      "https://hercules-ci.cachix.org"
     ];
     extra-trusted-public-keys = [
       "klarkc.cachix.org-1:R+z+m4Cq0hMgfZ7AQ42WRpGuHJumLLx3k0XhwpNFq9U="
       "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
-      "iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo="
       "loony-tools:pr9m4BkM/5/eSTZlkQyRt57Jz7OMBxNSUiMC4FkcNfk="
       "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "public-plutonomicon.cachix.org-1:3AKJMhCLn32gri1drGuaZmFrmnue+KkKrhhubQk/CWc="
+      "hercules-ci.cachix.org-1:ZZeDl9Va+xe9j+KqdzoBZMFJHVQ42Uu/c/1/KMC5Lw0="
     ];
-    allow-import-from-derivation = "true";
   };
 }
