@@ -105,6 +105,7 @@
             echo ...
             echo Getting Current Stats
             ./scripts/getCurrentWkStats.sh
+            tsc
           '';
         };
       apps = {
