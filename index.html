@@ -1,187 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="styles.css" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <style>
-  @media (max-width: 767px) {
-  .header {
-    flex-direction: column;
-    padding: 16px;
-  }
-  .import-export {
-    /* margin-top: 2px; */
-    align-items: right;
-  }
-  }
-  .main-category {
-    margin-left: 15px;
-  }
-  .sub-category {
-    margin-left: 30px;
-  }
-  .item {
-    margin-left: 80px;
-    white-space: pre;
-  }
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch; /* changed from 'center' to 'stretch' */
-    padding: 16px;
-  }
-  .title-and-qr {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex-grow: 1; /* added this property */
-  }
-  .rename-clear {
-    display: flex;
-    gap: 7px;
-    align-items: right;
-  }
-  .hidden {
-    display: none;
-  }
-  .current-session {
-    color: green;
-  }
-  .current-session td:nth-child(2) {
-    color: green;
-  }
-  .column-1 {
-    width: 15%;
-  }
-  .column-2 {
-    width: 15%;
-  }
-  .column-3 {
-    width: 70%;
-  }
-  .imported-session td:nth-child(2) {
-    color: blue;
-  }
-  h1 {
-    width: 100%; /* added this property */
-  }
-  .imported-session {
-    color: blue;
-  }
-  select {
-    width: 100%;
-    max-width: 250px;
-    box-sizing: border-box;
-  }
-  table {
-    border-collapse: collapse;
-    width: 90%;
-    table-layout: fixed;
-  }
-  th, td {
-    padding: 8px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-  }
-  th {
-    background-color: #f6c308;
-    font-weight: bold;
-  }
-  td {
-    font-family: "Lucida Console", Monaco, monospace;
-  }
-  tbody tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  tbody tr:hover {
-    background-color: #ddd;
-  }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-  button, input[type="number"], input[type="file"], select {
-    font: inherit;
-  }
-  button {
-    cursor: pointer;
-  }
-  #listName {
-    font-size: 32px;
-    font-weight: bold;
-    align-items: center;
-  }
-  #countInput {
-    width: 50px; /* Adjust this value to your preference */
-  }
-  input[type="file"].hidden {
-    display: none;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Active Players List</title>
 
-  label[for="importInventory"],
-  label[for="importList"] {
-    display: inline-block;
-    padding: 6px 12px;
-    background-color: #007bff;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+    <!-- Optional Styling for the Table -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
 
-  label[for="importInventory"]:hover,
-  label[for="importList"]:hover {
-    background-color: #0056b3;
-  }
-  </style>
-  <title>Inventori</title>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
 </head>
+
 <body>
-  </style>
-  <title>Inventori</title>
-</head>
-<body>
-  <!-- Wrap the <h1> and import/export functionality in a <header> element -->
-    <header class="header">
-      <div class="title-and-qr">
-        <div id="qrcode"></div>
-        <span id="listName">NewCount</span>
-      </h1>
-      </div>
-      <!-- Wrap the import/export buttons in a <div> with the class "import-export" -->
-      <div class="import-export">
-        <button id="renameList">Rename</button>
-        <label for="importList">Import Count</label>
-        <input type="file" id="importList" accept=".json" class="hidden" />
-        <button id="exportList">Export JSON</button>
-        <button id="exportCsv">Export CSV</button>
-      </div>
-    </header>
-  <select id="mainCategory"></select>
-  <select id="subCategory" class="hidden"></select>
-  <select id="item" class="hidden"></select>
-  <button id="increment"> + </button>
-  <button id="decrement"> - </button>
-  <input id="countInput" type="number" value="1" min="1" step="1">
-  <label for="importInventory">Import List</label>
-  <input type="file" id="importInventory" accept=".json" class="hidden">
-  <table id="countList">
-    <thead>
-      <tr>
-        <th>Count</th>
-        <th>Inventory Name</th>
-      </tr>
-    </thead>
-    <tbody id="countList">
-    </tbody>
-  </table>
-  <script src="main.js" type="module"></script>
+    <h1>Active Players List</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Active</th>
+                <th>Current Team ID</th>
+                <th>Position Code</th>
+                <th>Position Abbreviation</th>
+                <th>Bat Side</th>
+                <th>Pitch Hand</th>
+                <th>Name (First Last)</th>
+                <th>Name Slug</th>
+            </tr>
+        </thead>
+        <tbody id="playerTable">
+            <!-- Player rows will be injected here by the TypeScript code -->
+        </tbody>
+    </table>
+
+    <script src="dist/main.js"></script>
 </body>
-<button id="clearList">Clear Count</button>
-<button id="clearBrowserDataButton">Clear ALL</button>
-<div id="statusMessage" style="position: fixed; color: red; bottom: 0; width: 100%; text-align: center;"></div>
+
 </html>
