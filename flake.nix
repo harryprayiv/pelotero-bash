@@ -94,6 +94,18 @@
             nodePackages.typescript
             nodePackages.typescript-language-server
           ];
+          shellHook = ''
+            echo Current MLB Roster Updating
+            echo .
+            echo ..
+            echo ...
+            ./scripts/scrape_active_players.sh
+            echo .
+            echo ..
+            echo ...
+            echo Getting Current Stats
+            ./scripts/getCurrentWkStats.sh
+          '';
         };
       apps = {
         live-server = {
