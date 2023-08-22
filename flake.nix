@@ -42,12 +42,8 @@
             prelude
             console
             effect
-            halogen
+            # foreign-generic
             argonaut
-            argonaut-codecs
-            aff
-            # halogen-select
-            affjax
           ];
           # FFI dependencies
           # foreign.Foreign.JSON.node_modules = with purs-nix.ps-pkgs; [ foreign-generic ];
@@ -94,19 +90,20 @@
             nodePackages.typescript
             nodePackages.typescript-language-server
           ];
-          shellHook = ''
-            echo Current MLB Roster Updating
-            echo .
-            echo ..
-            echo ...
-            ./scripts/scrape_active_players.sh
-            echo .
-            echo ..
-            echo ...
-            echo Getting Current Stats
-            ./scripts/getCurrentWkStats.sh
-            tsc
-          '';
+          # shellHook = ''
+          #   echo Current MLB Roster Updating
+          #   echo .
+          #   echo ..
+          #   echo ...
+          #   ./scripts/scrape_active_players.sh
+          #   echo .
+          #   echo ..
+          #   echo ...
+          #   echo Getting Current Stats
+          #   ./scripts/getCurrentWkStats.sh
+          #   tsc
+          #   live-server
+          # '';
         };
       apps = {
         live-server = {
