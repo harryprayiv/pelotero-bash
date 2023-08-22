@@ -4,6 +4,8 @@
     nixpkgs.follows = "purs-nix/nixpkgs";
     utils.url = "github:ursi/flake-utils";
     ps-tools.follows = "purs-nix/ps-tools";
+    systems.url = "github:nix-systems/default";
+
     npmlock2nix = {
       flake = false;
       url = "github:nix-community/npmlock2nix";
@@ -14,6 +16,8 @@
     self,
     utils,
     nixpkgs,
+    flake-utils,
+    systems,
     ...
   } @ inputs: let
     systems = ["x86_64-linux"];
@@ -50,7 +54,16 @@
         };
       ps-tools = inputs.ps-tools.legacyPackages.${system};
       ps-command = ps.command {};
-    in {
+      pkgs = import nixpkgs {
+        inherit system;
+      };
+    in rec {
+      defaultApp = flake-utils.lib.mkApp {
+        type = "app";
+        drv = live-server;
+      };
+      live-server = pkgs.nodePackages.live-server;
+      typescript = pkgs.nodePackages.typescript;
       # packages.default = ps.output { };
       packages = with ps; {
         default = app {name = "fantasyDraft";};
@@ -70,7 +83,29 @@
             spago
             yarn2nix
           ];
+          buildInputs = with pkgs; [
+            nodejs
+            # You can set the major version of Node.js to a specific one instead
+            # of the default version
+            # pkgs.nodejs-19_x
+            # You can choose pnpm, yarn, or none (npm).
+            nodePackages.pnpm
+            nodePackages.live-server
+            nodePackages.typescript
+            nodePackages.typescript-language-server
+          ];
         };
+      apps = {
+        live-server = {
+          type = "app";
+          program = "${live-server}/bin/live-server";
+        };
+
+        typescript = {
+          type = "app";
+          program = "${typescript}/bin/typescript";
+        };
+      };
     });
 
   # --- Flake Local Nix Configuration ----------------------------
