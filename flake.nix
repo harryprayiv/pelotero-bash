@@ -56,7 +56,7 @@
       };
 
       weekStatsScript = pkgs.writeScriptBin "weekStats" (builtins.readFile ./scripts/getCurrentWkStats.sh);
-      seasonStatsScript = pkgs.writeScriptBin "seasonStats" (builtins.readFile ./scripts/wholeDAY.sh);
+      seasonStatsScript = pkgs.writeScriptBin "dayStats" (builtins.readFile ./scripts/wholeDAY.sh);
       rosterScript = pkgs.writeScriptBin "roster" (builtins.readFile ./scripts/scrape_active_players.sh);
     in rec {
       defaultApp = flake-utils.lib.mkApp {
