@@ -54,6 +54,10 @@
       pkgs = import nixpkgs {
         inherit system;
       };
+
+      weekStatsScript = pkgs.writeScriptBin "weekStats" (builtins.readFile ./scripts/getCurrentWkStats.sh);
+      seasonStatsScript = pkgs.writeScriptBin "seasonStats" (builtins.readFile ./scripts/wholeDAY.sh);
+      rosterScript = pkgs.writeScriptBin "roster" (builtins.readFile ./scripts/scrape_active_players.sh);
     in rec {
       defaultApp = flake-utils.lib.mkApp {
         type = "app";
@@ -79,6 +83,11 @@
             nodejs
             spago
             yarn2nix
+
+            # Bash Scripts to Pull in Data
+            weekStatsScript
+            seasonStatsScript
+            rosterScript
           ];
           buildInputs = with pkgs; [
             nodejs
@@ -91,20 +100,16 @@
             nodePackages.typescript
             nodePackages.typescript-language-server
           ];
-          # shellHook = ''
-          #   echo Current MLB Roster Updating
-          #   echo .
-          #   echo ..
-          #   echo ...
-          #   ./scripts/scrape_active_players.sh
-          #   echo .
-          #   echo ..
-          #   echo ...
-          #   echo Getting Current Stats
-          #   ./scripts/getCurrentWkStats.sh
-          #   tsc
-          #   live-server
-          # '';
+
+          shellHook = ''
+            echo "Welcome to the development shell!"
+            echo
+            echo Current MLB Roster Updating right quick....
+            ./scripts/scrape_active_players.sh
+            echo .
+            echo ..
+            echo ...
+          '';
         };
       apps = {
         live-server = {
@@ -116,7 +121,6 @@
           type = "app";
           program = "${typescript}/bin/typescript";
         };
-
         # purStats = {
         #   type = "app";
         #   program = "${purStats}/bin/purStats";
