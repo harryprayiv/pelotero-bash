@@ -93,7 +93,7 @@
             nodejs
             # You can set the major version of Node.js to a specific one instead
             # of the default version
-            # pkgs.nodejs-19_x
+            # pkgs.nodejs_19_x
             # You can choose pnpm, yarn, or none (npm).
             nodePackages.pnpm
             nodePackages.live-server
@@ -104,7 +104,7 @@
           shellHook = ''
             echo "Welcome to the development shell!"
             echo
-            echo Current MLB Roster Updating right quick....
+            echo grabbing the Current Complete MLB roster right quick....
             ./scripts/scrape_active_players.sh
             echo .
             echo ..
