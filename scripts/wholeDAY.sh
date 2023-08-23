@@ -95,7 +95,7 @@ while [ "$current_ts" -le "$end_ts" ]; do
     day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "{\"games\": $games_status_json}"))
 
     # Define the output filename
-    summed_file="$output_folder/$(date -d "$current_date" +%Y_%m_%d)_SUMMED.json"
+    summed_file="$output_folder/$(date -d "$current_date" +%Y_%m_%d).json"
 
     # Generate the checksum for the content using SHA-256
     checksum=$(echo "$day_summed_data" | sha256sum | cut -d ' ' -f 1)
