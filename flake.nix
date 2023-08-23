@@ -36,17 +36,18 @@
         purs-nix.purs
         {
           # Project dir (src, test)
-          dir = ./.;
+          dir = ./src/purescript;
           # Dependencies
           dependencies = with purs-nix.ps-pkgs; [
             prelude
             console
             effect
-            # foreign-generic
             argonaut
+            foreign
+            foldable-traversable
           ];
           # FFI dependencies
-          # foreign.Foreign.JSON.node_modules = with purs-nix.ps-pkgs; [ foreign-generic ];
+          # foreign.Foreign.JSON.node_modules = ./node_modules;
         };
       ps-tools = inputs.ps-tools.legacyPackages.${system};
       ps-command = ps.command {};
@@ -60,9 +61,9 @@
       };
       live-server = pkgs.nodePackages.live-server;
       typescript = pkgs.nodePackages.typescript;
-      # packages.default = ps.output { };
+      # packages.default = ps.output {};
       packages = with ps; {
-        default = app {name = "fantasyDraft";};
+        # default = app {name = "fantasyDraft";};
         bundle = bundle {};
         output = output {};
       };
@@ -115,6 +116,11 @@
           type = "app";
           program = "${typescript}/bin/typescript";
         };
+
+        # purStats = {
+        #   type = "app";
+        #   program = "${purStats}/bin/purStats";
+        # };
       };
     });
 
