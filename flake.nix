@@ -37,7 +37,9 @@
         purs-nix.purs
         {
           # Project dir (src, test)
-          dir = ./src/purescript;
+          srcs = ["./src/purescript"];
+          test = "./src/purescript/test";
+          test-module = "Test.Main";
           # Dependencies
           dependencies = with purs-nix.ps-pkgs; [
             aff
@@ -70,7 +72,9 @@
           ];
           # FFI dependencies
           # foreign.Foreign.JSON.node_modules = node_modules/package-lock.json;
+          # foreign."Web.HTML".node_modules = /node_modules;
         };
+
       ps-tools = inputs.ps-tools.legacyPackages.${system};
       ps-command = ps.command {};
       pkgs = import nixpkgs {
