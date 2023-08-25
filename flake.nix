@@ -1,6 +1,6 @@
 {
   inputs = {
-    purs-nix.url = "github:purs-nix/purs-nix";
+    purs-nix.url = "github:purs-nix/purs-nix/ps-0.15";
     nixpkgs.follows = "purs-nix/nixpkgs";
     utils.url = "github:ursi/flake-utils";
     ps-tools.follows = "purs-nix/ps-tools";
@@ -40,8 +40,6 @@
           dir = ./src/purescript;
           # Dependencies
           dependencies = with purs-nix.ps-pkgs; [
-            react
-            react-dom
             aff
             aff-promise
             argonaut
@@ -79,6 +77,7 @@
         inherit system;
       };
       spago2nix = inputs.spago2nix.packages.${system}.spago2nix;
+
       weekStatsScript = pkgs.writeScriptBin "weekStats" (builtins.readFile ./scripts/getCurrentWkStats.sh);
       seasonStatsScript = pkgs.writeScriptBin "dayStats" (builtins.readFile ./scripts/wholeDAY.sh);
       rosterScript = pkgs.writeScriptBin "roster" (builtins.readFile ./scripts/scrape_active_players.sh);
@@ -87,15 +86,16 @@
         type = "app";
         drv = live-server;
       };
+
       live-server = pkgs.nodePackages.live-server;
       typescript = pkgs.nodePackages.typescript;
       # packages.default = ps.output {};
       packages = with ps; {
-        # default = app {name = "fantasyDraft";};
+        # default = app {name = "pelotero-math";};
         bundle = bundle {};
         output = output {};
       };
-
+      bundle.esbuild = {format = "iife";};
       devShells.default =
         pkgs.mkShell
         {
@@ -108,7 +108,7 @@
             spago
             yarn2nix
 
-            purescript
+            # purescript
             nodejs
             # nodePackages.purs-tidy
             # esbuild
@@ -121,19 +121,20 @@
             inputs.spago2nix.packages.x86_64-linux.spago2nix
           ];
           buildInputs = with pkgs; [
-            nodejs
-            spago
+            # nodejs
+            # spago
 
-            purescript
+            # purescript
             # esbuild
+            purs-nix.esbuild
+            purs-nix.purescript
 
             # You can choose pnpm, yarn, or none (npm).
-            nodePackages.pnpm
-            nodePackages.live-server
-            nodePackages.typescript
-            nodePackages.typescript-language-server
+            # nodePackages.pnpm
+            # nodePackages.live-server
+            # nodePackages.typescript
+            # nodePackages.typescript-language-server
           ];
-
           shellHook = ''
             echo "Welcome to the development shell!"
             echo

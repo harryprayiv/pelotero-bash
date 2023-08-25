@@ -378,6 +378,7 @@
       },
       "original": {
         "owner": "purs-nix",
+        "ref": "ps-0.15",
         "repo": "purs-nix",
         "type": "github"
       }
