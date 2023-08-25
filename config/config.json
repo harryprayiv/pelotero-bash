@@ -1,0 +1,68 @@
+{
+  "status": "I",
+  "leagueID": "9d0e0f7c5930090008ce462b9daa059ec7faf85e8b62372d2ed764f8c117e6e4",
+  "point_parameters": {
+    "style": "Head_to_Head",
+    "start_UTC": "2023_08_20",
+    "end_UTC": "2023_08_26",
+    "batting": {
+      "single": "1",
+      "double": "2",
+      "triple": "3",
+      "homerun": "4",
+      "rbi": "1",
+      "run": "1",
+      "base_on_balls": "1",
+      "stolen_base": "2",
+      "hit_by_pitch": "1",
+      "strikeout": "- 0.5",
+      "caught_stealing": "- 1"
+    },
+    "pitching": {
+      "win": "7",
+      "save": "7",
+      "quality_start": "3",
+      "inning_pitched": "3",
+      "strikeout": "0.5",
+      "base_on_balls": "- 1",
+      "hits_allowed": "- 1",
+      "earned_runs": "- 1",
+      "hit_batsman": "- 1",
+      "loss": "- 0.5"
+    },
+    "valid_roster": {
+      "C": "1",
+      "1B": "1",
+      "2B": "1",
+      "3B": "1",
+      "SS": "1",
+      "OF": "3",
+      "U": "1",
+      "SP": "5",
+      "RP": "2",
+      "max_size": "16"
+    }
+  },
+  "draft_parameters": {
+    "autoDraft": true,
+    "autoDraft_UTC": "2023_08_16__06_00_01",
+    "draft_limits": {
+      "C": "6",
+      "1B": "6",
+      "2B": "6",
+      "3B": "6",
+      "SS": "6",
+      "OF": "8",
+      "U": "6",
+      "SP": "10",
+      "RP": "7"
+    }
+  },
+  "comissioner": "436f6d6d697373696f6e6572205363726f74756d_de65ccbedd4c080939eca365a07f06f77d5a3f5854cef00d13db7f3b7be8fc08",
+  "lgMembers": [
+    "572e20452e20422e20467563626f6973_12161847fa35995db307c5e28c723589794e58a9024c9de050f79ed817a3fa46",
+    "57697a61726420536c65657665205661676d6f6e67657273_ab8265770bcd5be8f878bd08e3e0c412fbbf0fe2dfbead89b7af87b9b1f80678",
+    "57697a67696e6173_cda45223adff02e6519fba4d850ed6ff68a2f8c993fa42224a18fafd266b5963",
+    "436f6d6d697373696f6e6572205363726f74756d_de65ccbedd4c080939eca365a07f06f77d5a3f5854cef00d13db7f3b7be8fc08"
+  ]
+}

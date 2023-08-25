@@ -1,10 +1,11 @@
 {
   inputs = {
-    purs-nix.url = "github:purs-nix/purs-nix/ps-0.15";
+    purs-nix.url = "github:purs-nix/purs-nix";
     nixpkgs.follows = "purs-nix/nixpkgs";
     utils.url = "github:ursi/flake-utils";
     ps-tools.follows = "purs-nix/ps-tools";
     systems.url = "github:nix-systems/default";
+    spago2nix.url = "github:justinwoo/spago2nix";
 
     npmlock2nix = {
       flake = false;
@@ -39,22 +40,45 @@
           dir = ./src/purescript;
           # Dependencies
           dependencies = with purs-nix.ps-pkgs; [
-            prelude
-            console
-            effect
+            react
+            react-dom
+            aff
+            aff-promise
             argonaut
-            foreign
+            argonaut-generic
+            arrays
+            bifunctors
+            console
+            control
+            effect
+            either
+            exceptions
             foldable-traversable
+            free
+            functions
+            maybe
+            ordered-collections
+            pairs
+            prelude
+            react-basic
+            react-basic-dom
+            react-basic-hooks
+            strings
+            test-unit
+            tuples
+            validation
+            web-dom
+            web-html
           ];
           # FFI dependencies
-          # foreign.Foreign.JSON.node_modules = ./node_modules;
+          # foreign.Foreign.JSON.node_modules = node_modules/package-lock.json;
         };
       ps-tools = inputs.ps-tools.legacyPackages.${system};
       ps-command = ps.command {};
       pkgs = import nixpkgs {
         inherit system;
       };
-
+      spago2nix = inputs.spago2nix.packages.${system}.spago2nix;
       weekStatsScript = pkgs.writeScriptBin "weekStats" (builtins.readFile ./scripts/getCurrentWkStats.sh);
       seasonStatsScript = pkgs.writeScriptBin "dayStats" (builtins.readFile ./scripts/wholeDAY.sh);
       rosterScript = pkgs.writeScriptBin "roster" (builtins.readFile ./scripts/scrape_active_players.sh);
@@ -84,16 +108,26 @@
             spago
             yarn2nix
 
+            purescript
+            nodejs
+            # nodePackages.purs-tidy
+            esbuild
+
             # Bash Scripts to Pull in Data
             weekStatsScript
             seasonStatsScript
             rosterScript
+
+            inputs.spago2nix.packages.x86_64-linux.spago2nix
           ];
           buildInputs = with pkgs; [
             nodejs
-            # You can set the major version of Node.js to a specific one instead
-            # of the default version
-            # pkgs.nodejs_19_x
+            spago
+
+            purescript
+            nodejs
+            esbuild
+
             # You can choose pnpm, yarn, or none (npm).
             nodePackages.pnpm
             nodePackages.live-server
@@ -120,6 +154,11 @@
         typescript = {
           type = "app";
           program = "${typescript}/bin/typescript";
+        };
+
+        spago2nix = {
+          type = "app";
+          program = "${spago2nix}/bin/spago2nix";
         };
         # purStats = {
         #   type = "app";
