@@ -111,7 +111,7 @@
             purescript
             nodejs
             # nodePackages.purs-tidy
-            esbuild
+            # esbuild
 
             # Bash Scripts to Pull in Data
             weekStatsScript
@@ -125,8 +125,7 @@
             spago
 
             purescript
-            nodejs
-            esbuild
+            # esbuild
 
             # You can choose pnpm, yarn, or none (npm).
             nodePackages.pnpm

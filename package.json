@@ -1,11 +1,11 @@
 {
-  "name": "purescript-book-chapter10",
+  "name": "pelotero-math",
   "version": "0.1.0",
-  "description": "The Foreign Function Interface",
+  "description": "Using a Foreign Function Interface",
   "main": "output/Main/index.js",
   "private": true,
-  "author": "Phil Freeman",
-  "license": "Creative,Commons,Attribution-NonCommercial-ShareAlike,4.0,International,License",
+  "author": "Harry Pray IV",
+  "license": "Apache-2.0",
   "dependencies": {
     "react": "^16.13.1",
     "react-dom": "^16.13.1"

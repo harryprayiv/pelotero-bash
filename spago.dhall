@@ -2,7 +2,7 @@
 Welcome to a Spago project!
 You can edit this file as you like.
 -}
-{ name = "my-project"
+{ name = "pelotero-math"
 , dependencies =
   [ "aff"
   , "aff-promise"
@@ -33,5 +33,5 @@ You can edit this file as you like.
   , "web-html"
   ]
 , packages = ./packages.dhall
-, sources = [ "src/purescript/**/*.purs", "test/**/*.purs" ]
+, sources = [ "src/purescript/**/*.purs", "src/purescript/test/**/*.purs" ]
 }
