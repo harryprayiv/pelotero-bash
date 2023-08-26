@@ -87,12 +87,12 @@
 
       watch-compile = pkgs.writeShellScriptBin "watch-compile" ''
         set -x
-        find src | entr -s 'echo "compiling..."; purs-nix compile'
+        find src/purescript | entr -s 'echo "compiling..."; purs-nix compile'
       '';
 
-      watch-tests = pkgs.writeShellScriptBin "watch-test" ''
+      watch-test = pkgs.writeShellScriptBin "watch-test" ''
         set -x
-        find test src | entr -s 'echo "compiling tests..."; purs-nix test;'
+        find src/purescript/test src/purescript | entr -s 'echo "compiling tests..."; purs-nix test;'
       '';
     in rec {
       defaultApp = flake-utils.lib.mkApp {
@@ -136,7 +136,8 @@
             # inputs.npmlock2nix
 
             watch-compile
-            watch-tests
+            entr
+            watch-test
           ];
           buildInputs = with pkgs; [
             nodejs
