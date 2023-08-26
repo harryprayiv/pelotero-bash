@@ -1,0 +1,250 @@
+league parameters json
+```
+{
+    "status": "I",
+    "leagueID": "9d0e0f7c5930090008ce462b9daa059ec7faf85e8b62372d2ed764f8c117e6e4",
+    "point_parameters": {
+      "style": "Head_to_Head",
+      "start_UTC": "2023_08_20",
+      "end_UTC": "2023_08_26",
+      "batting": {
+        "single": "1",
+        "double": "2",
+        "triple": "3",
+        "homerun": "4",
+        "rbi": "1",
+        "run": "1",
+        "base_on_balls": "1",
+        "stolen_base": "2",
+        "hit_by_pitch": "1",
+        "strikeout": "- 0.5",
+        "caught_stealing": "- 1"
+      },
+      "pitching": {
+        "win": "7",
+        "save": "7",
+        "quality_start": "3",
+        "inning_pitched": "3",
+        "strikeout": "0.5",
+        "base_on_balls": "- 1",
+        "hits_allowed": "- 1",
+        "earned_runs": "- 1",
+        "hit_batsman": "- 1",
+        "loss": "- 0.5"
+      },
+      "valid_roster": {
+        "C": "1",
+        "1B": "1",
+        "2B": "1",
+        "3B": "1",
+        "SS": "1",
+        "OF": "3",
+        "U": "1",
+        "SP": "5",
+        "RP": "2",
+        "max_size": "16"
+      }
+    },
+    "draft_parameters": {
+      "autoDraft": true,
+      "autoDraft_UTC": "2023_08_16__06_00_01",
+      "draft_limits": {
+        "C": "6",
+        "1B": "6",
+        "2B": "6",
+        "3B": "6",
+        "SS": "6",
+        "OF": "8",
+        "U": "6",
+        "SP": "10",
+        "RP": "7"
+      }
+    },
+    "comissioner": "playerx_1234568",
+    "lgMembers": [
+      "playerq_1234568",
+      "playerz_1234568",
+      "playery_1234568",
+      "playerx_1234568"
+    ]
+  }
+```
+
+
+each team manager's roster file looks like this (this is playery_1234568_roster.json but the roster isn't filled in):
+```
+{
+  "status": "V",
+  "comissioner": "playerx_1234568",
+  "teamId": "playery_1234568",
+  "leagueID": "b9daa059ec7faf85e8b62372d2ed764f8c117e6e4",
+  "starting_lineup": {
+      "C":  "592351",
+      "1B": "668881",
+      "2B": "545341",
+      "3B": "642770",
+      "SS": "493329",
+      "OF": [ "664059", "641656", "664023" ],
+      "U":  "606992",
+      "SP": [ "472551", "671096", "676265", "656061", "642758", "670183" ],
+      "RP": [ "624647", "669022" ]
+    },
+    "roster": {
+      "C": [ "id", "id", "id", "id", "id", "id" ],
+      "1B": [ "id", "id", "id", "id", "id", "id" ],
+      "2B": [ "id", "id", "id", "id", "id", "id" ],
+      "3B": [ "id", "id", "id", "id", "id", "id" ],
+      "SS": [ "id", "id", "id", "id", "id", "id" ],
+      "OF": [ "id", "id", "id", "id", "id", "id", "id", "id" ],
+      "U": [ "id", "id", "id", "id", "id", "id" ],
+      "RP": [ "id", "id", "id", "id", "id", "id", "id" ],
+      "SP": [ "id", "id", "id", "id", "id", "id", "id", "id", "id", "id" ],
+      "max_size": "16"
+    },
+  "draft_parameters": {
+    "autoDraft": true,
+    "autoDraft_UTC": "2023_08_16__06_00_01",
+    "draft_limits": {
+      "C": "6",
+      "1B": "6",
+      "2B": "6",
+      "3B": "6",
+      "SS": "6",
+      "OF": "8",
+      "U": "6",
+      "SP": "10",
+      "RP": "7"
+    }
+  },
+}
+```
+create a bash script that randomly populates a new roster file (playerx_1234568_roster.json) with real player "id"'s using a list of players that looks like this abbreviated list:
+```
+{
+    "472551": {
+      "id": 472551,
+      "useName": "Fernando",
+      "useLastName": "Abad",
+      "nameSlug": "fernando-abad-472551",
+      "currentTeam": {
+        "id": 115
+      },
+      "primaryPosition": {
+        "code": "1",
+        "abbreviation": "P"
+      },
+      "batSide": {
+        "code": "L"
+      },
+      "pitchHand": {
+        "code": "L"
+      },
+      "active": true
+    },
+    "671096": {
+      "id": 671096,
+      "useName": "Andrew",
+      "useLastName": "Abbott",
+      "nameSlug": "andrew-abbott-671096",
+      "currentTeam": {
+        "id": 113
+      },
+      "primaryPosition": {
+        "code": "1",
+        "abbreviation": "P"
+      },
+      "batSide": {
+        "code": "L"
+      },
+      "pitchHand": {
+        "code": "L"
+      },
+      "active": true
+    },
+    "676265": {
+      "id": 676265,
+      "useName": "Cory",
+      "useLastName": "Abbott",
+      "nameSlug": "cory-abbott-676265",
+      "currentTeam": {
+        "id": 120
+      },
+      "primaryPosition": {
+        "code": "1",
+        "abbreviation": "P"
+      },
+      "batSide": {
+        "code": "R"
+      },
+      "pitchHand": {
+        "code": "R"
+      },
+      "active": true
+    },  
+      "676724": {
+        "id": 676724,
+        "useName": "Jared",
+        "useLastName": "Young",
+        "nameSlug": "jared-young-676724",
+        "currentTeam": {
+          "id": 112
+        },
+        "primaryPosition": {
+          "code": "3",
+          "abbreviation": "1B"
+        },
+        "batSide": {
+          "code": "L"
+        },
+        "pitchHand": {
+          "code": "R"
+        },
+        "active": true
+      },
+
+    ...
+    
+      "518595": {
+        "id": 518595,
+        "useName": "Travis",
+        "useLastName": "d'Arnaud",
+        "nameSlug": "travis-d-arnaud-518595",
+        "currentTeam": {
+          "id": 144
+        },
+        "primaryPosition": {
+          "code": "2",
+          "abbreviation": "C"
+        },
+        "batSide": {
+          "code": "R"
+        },
+        "pitchHand": {
+          "code": "R"
+        },
+        "active": true
+      },
+      "594798": {
+        "id": 594798,
+        "useName": "Jacob",
+        "useLastName": "deGrom",
+        "nameSlug": "jacob-degrom-594798",
+        "currentTeam": {
+          "id": 140
+        },
+        "primaryPosition": {
+          "code": "1",
+          "abbreviation": "P"
+        },
+        "batSide": {
+          "code": "L"
+        },
+        "pitchHand": {
+          "code": "R"
+        },
+        "active": true
+      },
+      "dataPulled": "2023_08_26_03_49",
+      "checksum": "d9dc756c821c1582c39598535b44f843b79b528f0c6e44ac4b1547f3c1739420"
+    }
+    ```
