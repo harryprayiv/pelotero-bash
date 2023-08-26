@@ -37,8 +37,8 @@
         purs-nix.purs
         {
           # Project dir (src, test)
-          srcs = ["./src/purescript"];
-          test = "./src/purescript/test";
+          srcs = ["src/purescript"];
+          test = "src/purescript/test";
           test-module = "Test.Main";
           # Dependencies
           dependencies = with purs-nix.ps-pkgs; [
@@ -70,9 +70,8 @@
             web-dom
             web-html
           ];
-          # FFI dependencies
-          # foreign.Foreign.JSON.node_modules = node_modules/package-lock.json;
-          # foreign."Web.HTML".node_modules = /node_modules;
+
+          # foreign.Main.node_modules = npmlock2nix.node_modules {src = ./.;} + /node_modules;
         };
 
       ps-tools = inputs.ps-tools.legacyPackages.${system};
@@ -85,6 +84,16 @@
       weekStatsScript = pkgs.writeScriptBin "weekStats" (builtins.readFile ./scripts/getCurrentWkStats.sh);
       seasonStatsScript = pkgs.writeScriptBin "dayStats" (builtins.readFile ./scripts/wholeDAY.sh);
       rosterScript = pkgs.writeScriptBin "roster" (builtins.readFile ./scripts/scrape_active_players.sh);
+
+      watch-compile = pkgs.writeShellScriptBin "watch-compile" ''
+        set -x
+        find src | entr -s 'echo "compiling..."; purs-nix compile'
+      '';
+
+      watch-tests = pkgs.writeShellScriptBin "watch-test" ''
+        set -x
+        find test src | entr -s 'echo "compiling tests..."; purs-nix test;'
+      '';
     in rec {
       defaultApp = flake-utils.lib.mkApp {
         type = "app";
@@ -94,6 +103,7 @@
       live-server = pkgs.nodePackages.live-server;
       typescript = pkgs.nodePackages.typescript;
       # packages.default = ps.output {};
+
       packages = with ps; {
         # default = app {name = "pelotero-math";};
         bundle = bundle {};
@@ -106,6 +116,7 @@
           packages = with pkgs; [
             ps-command
             ps-tools.for-0_15.purescript-language-server
+            ps-tools.for-0_15.purs-tidy
             purs-nix.esbuild
             purs-nix.purescript
             nodejs
@@ -113,7 +124,6 @@
             yarn2nix
 
             # purescript
-            nodejs
             # nodePackages.purs-tidy
             # esbuild
 
@@ -123,9 +133,13 @@
             rosterScript
 
             inputs.spago2nix.packages.x86_64-linux.spago2nix
+            # inputs.npmlock2nix
+
+            watch-compile
+            watch-tests
           ];
           buildInputs = with pkgs; [
-            # nodejs
+            nodejs
             # spago
 
             # purescript
@@ -134,12 +148,13 @@
             purs-nix.purescript
 
             # You can choose pnpm, yarn, or none (npm).
-            # nodePackages.pnpm
-            # nodePackages.live-server
-            # nodePackages.typescript
-            # nodePackages.typescript-language-server
+            nodePackages.pnpm
+            nodePackages.live-server
+            nodePackages.typescript
+            nodePackages.typescript-language-server
           ];
           shellHook = ''
+            export NIX_SHELL_NAME="pelotero-math"
             echo "Welcome to the development shell!"
             echo
             echo grabbing the Current Complete MLB roster right quick....
