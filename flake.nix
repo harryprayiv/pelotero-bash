@@ -145,6 +145,7 @@
             # Bash Scripts to Pull in Data
             weekStatsScript
             seasonStatsScript
+            compositeStatsScript
             rosterScript
             statPull
 
