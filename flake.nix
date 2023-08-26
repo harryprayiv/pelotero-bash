@@ -83,7 +83,22 @@
 
       weekStatsScript = pkgs.writeScriptBin "weekStats" (builtins.readFile ./scripts/getCurrentWkStats.sh);
       seasonStatsScript = pkgs.writeScriptBin "dayStats" (builtins.readFile ./scripts/wholeDAY.sh);
+      compositeStatsScript = pkgs.writeScriptBin "compositeDays" (builtins.readFile ./scripts/compositeStats.sh);
+
       rosterScript = pkgs.writeScriptBin "roster" (builtins.readFile ./scripts/scrape_active_players.sh);
+
+      statPull = pkgs.writeShellScriptBin "statPull" ''
+        if [ "$#" -ne 2 ]; then
+            echo "Usage: $0 <start_date> <end_date>"
+            exit 1
+        fi
+
+        start_date="$1"
+        end_date="$2"
+
+        dayStats "$start_date" "$end_date"
+        compositeDays "$start_date" "$end_date"
+      '';
 
       watch-compile = pkgs.writeShellScriptBin "watch-compile" ''
         set -x
@@ -131,6 +146,7 @@
             weekStatsScript
             seasonStatsScript
             rosterScript
+            statPull
 
             inputs.spago2nix.packages.x86_64-linux.spago2nix
             # inputs.npmlock2nix
