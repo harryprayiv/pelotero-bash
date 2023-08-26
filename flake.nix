@@ -1,12 +1,19 @@
 {
   inputs = {
-    purs-nix.url = "github:purs-nix/purs-nix/ps-0.15";
+    #Generic Stuff
     nixpkgs.follows = "purs-nix/nixpkgs";
-    utils.url = "github:ursi/flake-utils";
-    ps-tools.follows = "purs-nix/ps-tools";
     systems.url = "github:nix-systems/default";
-    spago2nix.url = "github:justinwoo/spago2nix";
+    utils.url = "github:ursi/flake-utils";
 
+    # Purescript stuff
+    purs-nix.url = "github:purs-nix/purs-nix/ps-0.15";
+    ps-tools.follows = "purs-nix/ps-tools";
+
+    # Haskell stuff
+    # haskell-nix.url = "github:input-output-hk/haskell.nix";
+
+    # *2Nix
+    spago2nix.url = "github:justinwoo/spago2nix";
     npmlock2nix = {
       flake = false;
       url = "github:nix-community/npmlock2nix";
@@ -26,7 +33,11 @@
     npmlock2nix = (import inputs.npmlock2nix {inherit pkgs;}).v1;
   in
     utils.apply-systems
-    {inherit inputs systems;}
+    {
+      inherit inputs systems;
+
+      overlays = [inputs.haskell-nix.overlay];
+    }
     ({
       system,
       pkgs,
@@ -37,8 +48,12 @@
         purs-nix.purs
         {
           # Project dir (src, test)
-          srcs = ["src/purescript"];
-          test = "src/purescript/test";
+          srcs = [
+            "src/purescript/**/*.purs"
+            "src/purescript/test/**/*.purs"
+          ];
+          test = "src/purescript/test/**/*.purs";
+
           test-module = "Test.Main";
           # Dependencies
           dependencies = with purs-nix.ps-pkgs; [
@@ -59,6 +74,12 @@
         inherit system;
       };
       spago2nix = inputs.spago2nix.packages.${system}.spago2nix;
+
+      # hixProject = pkgs.haskell-nix.hix.project {
+      #   src = ./.;
+      #   evalSystem = "x86_64-linux";
+      # };
+      # flake = hixProject.flake { };
 
       weekStatsScript = pkgs.writeScriptBin "weekStats" (builtins.readFile ./scripts/getCurrentWkStats.sh);
       seasonStatsScript = pkgs.writeScriptBin "dayStats" (builtins.readFile ./scripts/wholeDAY.sh);
