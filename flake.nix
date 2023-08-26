@@ -36,7 +36,7 @@
     {
       inherit inputs systems;
 
-      overlays = [inputs.haskell-nix.overlay];
+      # overlays = [inputs.haskell-nix.overlay];
     }
     ({
       system,
