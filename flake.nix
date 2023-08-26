@@ -42,33 +42,12 @@
           test-module = "Test.Main";
           # Dependencies
           dependencies = with purs-nix.ps-pkgs; [
-            aff
-            aff-promise
-            argonaut
-            argonaut-generic
             arrays
-            bifunctors
-            console
-            control
             effect
-            either
-            exceptions
-            foldable-traversable
-            free
-            functions
-            maybe
-            ordered-collections
-            pairs
+            partial
             prelude
-            react-basic
-            react-basic-dom
-            react-basic-hooks
-            strings
-            test-unit
-            tuples
-            validation
-            web-dom
-            web-html
+            psci-support
+            quickcheck
           ];
 
           # foreign.Main.node_modules = npmlock2nix.node_modules {src = ./.;} + /node_modules;
