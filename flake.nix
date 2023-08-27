@@ -58,6 +58,7 @@
           # Dependencies
           dependencies = with purs-nix.ps-pkgs; [
             prelude
+            datetime
             console
             arrays
             effect
