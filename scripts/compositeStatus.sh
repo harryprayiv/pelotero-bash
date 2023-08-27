@@ -14,7 +14,7 @@ end_ts=$(date -d "$end_date" +%s)
 current_ts=$(date -d "$current_date" +%s)
 
 # Define the name and location for the master JSON file
-COMPOSITE_FILE="scrapedData/${start_date}tooo${end_date}.json"
+COMPOSITE_FILE="scrapedData/${start_date}thru${end_date}.json"
 
 # Initialize the master file with an empty games object
 echo '{"games": {}}' > "$COMPOSITE_FILE"

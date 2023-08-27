@@ -57,12 +57,19 @@
           test-module = "Test.Main";
           # Dependencies
           dependencies = with purs-nix.ps-pkgs; [
+            prelude
+            console
             arrays
             effect
+            either
+            node-fs
+            node-buffer
+            exceptions
             partial
             prelude
             psci-support
             quickcheck
+            aff
           ];
 
           # foreign.Main.node_modules = npmlock2nix.node_modules {src = ./.;} + /node_modules;
@@ -124,7 +131,7 @@
         bundle = bundle {};
         output = output {};
       };
-      bundle.esbuild = {format = "iife";};
+      # bundle.esbuild = {format = "iife";};
       devShells.default =
         pkgs.mkShell
         {
@@ -132,10 +139,10 @@
             ps-command
             ps-tools.for-0_15.purescript-language-server
             ps-tools.for-0_15.purs-tidy
-            purs-nix.esbuild
+            # esbuild
             purs-nix.purescript
             nodejs
-            spago
+            # spago
             yarn2nix
 
             # purescript
@@ -161,8 +168,8 @@
             # spago
 
             # purescript
-            # esbuild
-            purs-nix.esbuild
+            esbuild
+            # purs-nix.esbuild
             purs-nix.purescript
 
             # You can choose pnpm, yarn, or none (npm).
