@@ -140,7 +140,7 @@
       # packages.default = ps.output {};
 
       packages = with ps; {
-        # default = app {name = "pelotero-math";};
+        default = ps.modules.Main.bundle {};
         bundle = bundle {};
         output = output {};
       };
