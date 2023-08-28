@@ -7,6 +7,7 @@
 
     # Purescript stuff
     purs-nix.url = "github:purs-nix/purs-nix/ps-0.15";
+    # purs-nix.url = "github:purs-nix/purs-nix";
     ps-tools.follows = "purs-nix/ps-tools";
 
     # Haskell stuff
@@ -63,17 +64,14 @@
             arrays
             effect
             either
-            node-fs
-            node-buffer
             exceptions
             partial
-            prelude
             psci-support
             quickcheck
             aff
           ];
 
-          # foreign.Main.node_modules = npmlock2nix.node_modules {src = ./.;} + /node_modules;
+          foreign.Main.node_modules = npmlock2nix.node_modules {src = ./.;} + /node_modules;
         };
 
       ps-tools = inputs.ps-tools.legacyPackages.${system};
@@ -108,15 +106,29 @@
         compositeDays "$start_date" "$end_date"
       '';
 
-      watch-compile = pkgs.writeShellScriptBin "watch-compile" ''
-        set -x
-        find src/purescript | entr -s 'echo "compiling..."; purs-nix compile'
-      '';
+      purs-watch = pkgs.writeShellApplication {
+        name = "purs-watch";
+        runtimeInputs = with pkgs; [entr ps-command];
+        text = "find src/purescript | entr -s 'echo building && purs-nix compile'";
+      };
 
-      watch-test = pkgs.writeShellScriptBin "watch-test" ''
-        set -x
-        find src/purescript/test src/purescript | entr -s 'echo "compiling tests..."; purs-nix test;'
-      '';
+      purs-test = pkgs.writeShellApplication {
+        name = "purs-watch";
+        runtimeInputs = with pkgs; [entr ps-command];
+        text = "find src/purescript/test | entr -s 'echo running tests && purs-nix test'";
+      };
+
+      vite = pkgs.writeShellApplication {
+        name = "vite";
+        runtimeInputs = with pkgs; [nodejs];
+        text = "npx vite --open";
+      };
+
+      purs-dev = pkgs.writeShellApplication {
+        name = "purs-dev";
+        runtimeInputs = with pkgs; [concurrently];
+        text = "concurrently purs-watch vite";
+      };
     in rec {
       defaultApp = flake-utils.lib.mkApp {
         type = "app";
@@ -140,7 +152,7 @@
             ps-command
             ps-tools.for-0_15.purescript-language-server
             ps-tools.for-0_15.purs-tidy
-            # esbuild
+            purs-nix.esbuild
             purs-nix.purescript
             nodejs
             # spago
@@ -149,6 +161,9 @@
             # purescript
             # nodePackages.purs-tidy
             # esbuild
+            vite
+            purs-watch
+            purs-dev
 
             # Bash Scripts to Pull in Data
             weekStatsScript
@@ -157,20 +172,16 @@
             rosterScript
             statPull
 
-            inputs.spago2nix.packages.x86_64-linux.spago2nix
+            spago2nix
             # inputs.npmlock2nix
-
-            watch-compile
-            entr
-            watch-test
           ];
           buildInputs = with pkgs; [
             nodejs
             # spago
 
             # purescript
-            esbuild
-            # purs-nix.esbuild
+            # esbuild
+            purs-nix.esbuild
             purs-nix.purescript
 
             # You can choose pnpm, yarn, or none (npm).
