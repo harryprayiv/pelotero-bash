@@ -122,8 +122,8 @@
 
       vite = pkgs.writeShellApplication {
         name = "vite";
-        runtimeInputs = with pkgs; [nodePackages.pnpm];
-        text = "pnpm vite --open";
+        runtimeInputs = with pkgs; [nodejs];
+        text = "npx vite --open";
       };
 
       purs-dev = pkgs.writeShellApplication {
