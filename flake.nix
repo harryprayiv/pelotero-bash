@@ -7,14 +7,13 @@
 
     # Purescript stuff
     purs-nix.url = "github:purs-nix/purs-nix/ps-0.15";
-    # purs-nix.url = "github:purs-nix/purs-nix";
     ps-tools.follows = "purs-nix/ps-tools";
 
     # Haskell stuff
     # haskell-nix.url = "github:input-output-hk/haskell.nix";
 
     # *2Nix
-    spago2nix.url = "github:justinwoo/spago2nix";
+
     npmlock2nix = {
       flake = false;
       url = "github:nix-community/npmlock2nix";
@@ -25,11 +24,15 @@
     self,
     utils,
     nixpkgs,
-    flake-utils,
     systems,
     ...
   } @ inputs: let
-    systems = ["x86_64-linux"];
+    name = "pelotero";
+    systems = [
+      "aarch64-darwin"
+      "x86_64-darwin"
+      "x86_64-linux"
+    ];
     pkgs = nixpkgs.legacyPackages.x86_64-linux;
     npmlock2nix = (import inputs.npmlock2nix {inherit pkgs;}).v1;
   in
@@ -79,7 +82,6 @@
       pkgs = import nixpkgs {
         inherit system;
       };
-      spago2nix = inputs.spago2nix.packages.${system}.spago2nix;
 
       # hixProject = pkgs.haskell-nix.hix.project {
       #   src = ./.;
@@ -130,13 +132,12 @@
         text = "concurrently purs-watch vite";
       };
     in rec {
-      defaultApp = flake-utils.lib.mkApp {
+      defaultApp = utils.lib.mkApp {
         type = "app";
         drv = live-server;
       };
 
       live-server = pkgs.nodePackages.live-server;
-      typescript = pkgs.nodePackages.typescript;
       # packages.default = ps.output {};
 
       packages = with ps; {
@@ -148,6 +149,7 @@
       devShells.default =
         pkgs.mkShell
         {
+          inherit name;
           packages = with pkgs; [
             ps-command
             ps-tools.for-0_15.purescript-language-server
@@ -155,12 +157,9 @@
             purs-nix.esbuild
             purs-nix.purescript
             nodejs
-            # spago
+
             yarn2nix
 
-            # purescript
-            # nodePackages.purs-tidy
-            # esbuild
             vite
             purs-watch
             purs-dev
@@ -171,24 +170,18 @@
             compositeStatsScript
             rosterScript
             statPull
-
-            spago2nix
-            # inputs.npmlock2nix
           ];
           buildInputs = with pkgs; [
             nodejs
-            # spago
 
-            # purescript
-            # esbuild
             purs-nix.esbuild
             purs-nix.purescript
 
             # You can choose pnpm, yarn, or none (npm).
             nodePackages.pnpm
             nodePackages.live-server
-            nodePackages.typescript
-            nodePackages.typescript-language-server
+            # nodePackages.typescript
+            # nodePackages.typescript-language-server
           ];
           shellHook = ''
             export NIX_SHELL_NAME="pelotero-math"
@@ -207,18 +200,9 @@
           program = "${live-server}/bin/live-server";
         };
 
-        typescript = {
-          type = "app";
-          program = "${typescript}/bin/typescript";
-        };
-
-        spago2nix = {
-          type = "app";
-          program = "${spago2nix}/bin/spago2nix";
-        };
-        # purStats = {
+        # typescript = {
         #   type = "app";
-        #   program = "${purStats}/bin/purStats";
+        #   program = "${typescript}/bin/typescript";
         # };
       };
     });
