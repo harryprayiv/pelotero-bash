@@ -64,6 +64,7 @@
             prelude
             datetime
             console
+            ordered-collections
             arrays
             effect
             either

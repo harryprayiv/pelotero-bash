@@ -31,15 +31,15 @@
       "loss": "- 0.5"
     },
     "valid_roster": {
-      "C": "1",
-      "1B": "1",
-      "2B": "1",
-      "3B": "1",
-      "SS": "1",
-      "OF": "3",
-      "U": "1",
-      "SP": "5",
-      "RP": "2",
+      "catcher": "1",
+      "first": "1",
+      "second": "1",
+      "third": "1",
+      "shortstop": "1",
+      "outfield": "3",
+      "utility": "1",
+      "s_pitcher": "5",
+      "r_pitcher": "2",
       "max_size": "16"
     }
   },
@@ -47,15 +47,15 @@
     "autoDraft": true,
     "autoDraft_UTC": "2023_08_16__06_00_01",
     "draft_limits": {
-      "C": "6",
-      "1B": "6",
-      "2B": "6",
-      "3B": "6",
-      "SS": "6",
-      "OF": "8",
-      "U": "6",
-      "SP": "10",
-      "RP": "7"
+      "catcher": "6",
+      "first": "6",
+      "second": "6",
+      "third": "6",
+      "shortstop": "6",
+      "outfield": "8",
+      "utility": "6",
+      "s_pitcher": "10",
+      "r_pitcher": "7"
     }
   },
   "comissioner": "436f6d6d697373696f6e6572205363726f74756d_de65ccbedd4c080939eca365a07f06f77d5a3f5854cef00d13db7f3b7be8fc08",
