@@ -54,7 +54,8 @@
           # Project dir (src, test)
           srcs = [
             "src/purescript/**/*.purs"
-            "src/purescript/test/**/*.purs"
+            "src/purescript/Fantasy/**/*.purs"
+            "src/purescript/Server/**/*.purs"
           ];
           test = "src/purescript/test/**/*.purs";
 
