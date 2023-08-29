@@ -54,7 +54,6 @@
           # Project dir (src, test)
           srcs = [
             "src/purescript/**/*.purs"
-            "src/purescript/Fantasy/**/*.purs"
             "src/purescript/Server/**/*.purs"
           ];
           test = "src/purescript/test/**/*.purs";
@@ -69,11 +68,15 @@
             arrays
             effect
             either
+            foreign
             exceptions
             partial
             psci-support
             quickcheck
             aff
+            affjax
+            yoga-json
+            fetch
 
             # for web app
             httpurple
