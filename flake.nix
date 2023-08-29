@@ -75,7 +75,7 @@
             aff
 
             # for web app
-            httpure
+            httpurple
             halogen
           ];
 
