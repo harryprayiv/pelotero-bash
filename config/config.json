@@ -24,6 +24,8 @@
       "quality_start": "3",
       "inning_pitched": "3",
       "strikeout": "0.5",
+      "complete_game": "5",
+      "shutout": "10",
       "base_on_balls": "- 1",
       "hits_allowed": "- 1",
       "earned_runs": "- 1",
