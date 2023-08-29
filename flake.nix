@@ -73,6 +73,10 @@
             psci-support
             quickcheck
             aff
+
+            # for web app
+            httpure
+            halogen
           ];
 
           foreign.Main.node_modules = npmlock2nix.node_modules {src = ./.;} + /node_modules;
