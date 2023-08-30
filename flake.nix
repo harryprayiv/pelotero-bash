@@ -55,6 +55,7 @@
           srcs = [
             "src/purescript/Wallet/**/*.purs"
             "src/purescript/Server/**/*.purs"
+            "src/purescript/Console/**/*.purs"
           ];
           test = "src/purescript/test/**/*.purs";
 
@@ -80,6 +81,7 @@
 
             # for web app
             httpurple
+            routing-duplex
             halogen
           ];
 
