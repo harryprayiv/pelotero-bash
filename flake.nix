@@ -77,13 +77,12 @@
             quickcheck
             aff
             affjax
-            yoga-json
             fetch
 
-            # for web app
-            httpurple
+            #Server
             routing-duplex
-            halogen
+            httpurple
+            yoga-json
           ];
 
           foreign.Main.node_modules = npmlock2nix.node_modules {src = ./.;} + /node_modules;
