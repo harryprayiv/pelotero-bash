@@ -196,7 +196,7 @@
             # nodePackages.typescript-language-server
           ];
           shellHook = ''
-            export NIX_SHELL_NAME="pelotero-math"
+            export NIX_SHELL_NAME="pelotero"
             echo "Welcome to the development shell!"
             echo
             echo grabbing the Current Complete MLB roster right quick....
