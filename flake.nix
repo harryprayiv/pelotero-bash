@@ -54,6 +54,7 @@
           # Project dir (src, test)
           srcs = [
             "src/purescript/Wallet/**/*.purs"
+            "src/purescript/Drafting/**/*.purs"
             "src/purescript/Server/**/*.purs"
             "src/purescript/Console/**/*.purs"
           ];

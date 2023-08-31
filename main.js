@@ -1,4 +1,4 @@
-// output/Main/foreign.js
+// output/Console/foreign.js
 function setHTML(html) {
   return () => {
     document.body.innerHTML = html;
@@ -433,7 +433,19 @@ var form = /* @__PURE__ */ function() {
 }();
 
 // output/Main/index.js
-var main = /* @__PURE__ */ setHTML(/* @__PURE__ */ render(form));
+var wallet = /* @__PURE__ */ setHTML(/* @__PURE__ */ render(form));
 
 // <stdin>
-main();
+wallet();
+
+// output/Console.Main/index.js
+var console = /* @__PURE__ */ setHTML(/* @__PURE__ */ render(form));
+
+// <stdin>
+console();
+
+// output/Console.Main/index.js
+var drafting = /* @__PURE__ */ setHTML(/* @__PURE__ */ render(form));
+
+// <stdin>
+drafting();
