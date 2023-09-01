@@ -81,7 +81,7 @@
 
             #Server
             routing-duplex
-            httpurple
+            httpure
             yoga-json
           ];
 
