@@ -36,3 +36,4 @@ executable vesting-contract
     , unordered-containers
     , vector
     , containers
+    , filepath
