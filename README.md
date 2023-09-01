@@ -1,4 +1,4 @@
-# Pelotero
+# Pelotero dApp with Haskell Back End
 
 A head-to-head MLB fantasy league app.  Currently broken , centralized, and very experimental.
 
