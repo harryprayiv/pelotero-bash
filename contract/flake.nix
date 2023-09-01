@@ -3,42 +3,50 @@
   inputs.nixpkgs.follows = "horizon-wave-ocean/nixpkgs";
   inputs.utils.url = "github:ursi/flake-utils";
 
-  outputs = { self, utils, ... }@inputs:
+  outputs = {
+    self,
+    utils,
+    ...
+  } @ inputs:
     utils.apply-systems
-      {
-        inherit inputs;
-        # TODO support additional systems on hor
-        #  horizon-platform is only supporting linux
-        systems = [ "x86_64-linux" ];
-      }
-      ({ pkgs, system, ... }:
-        let
-          hsPkgs =
-            with pkgs.haskell.lib;
-            inputs.horizon-wave-ocean.legacyPackages.${system}.extend (hfinal: hprev:
-              {
-                vesting-contract = disableLibraryProfiling (hprev.callCabal2nix "vesting-contract" ./. { });
-              });
-          script = pkgs.runCommand "script"
-            {
-              buildInputs = [ hsPkgs.vesting-contract ];
-            }
-            ''vesting-contract > $out'';
-          script-check = pkgs.runCommand "script-check" { }
-            ''cat ${script}; touch $out'';
-        in
-        {
-          packages.default = hsPkgs.vesting-contract;
-          packages.script = script;
-
-          devShells.default = hsPkgs.vesting-contract.env.overrideAttrs (attrs: {
-            buildInputs = with pkgs; attrs.buildInputs ++ [
-              cabal-install
-            ];
-          });
-
-          checks.default = script-check;
+    {
+      inherit inputs;
+      # TODO support additional systems on hor
+      #  horizon-platform is only supporting linux
+      systems = ["x86_64-linux"];
+    }
+    ({
+      pkgs,
+      system,
+      ...
+    }: let
+      hsPkgs = with pkgs.haskell.lib;
+        inputs.horizon-wave-ocean.legacyPackages.${system}.extend (hfinal: hprev: {
+          scraper = disableLibraryProfiling (hprev.callCabal2nix "scraper" ./. {});
         });
+      script =
+        pkgs.runCommand "script"
+        {
+          buildInputs = [hsPkgs.scraper];
+        }
+        ''scraper > $out'';
+      script-check =
+        pkgs.runCommand "script-check" {}
+        ''cat ${script}; touch $out'';
+    in {
+      packages.default = hsPkgs.scraper;
+      packages.script = script;
+
+      devShells.default = hsPkgs.scraper.env.overrideAttrs (attrs: {
+        buildInputs = with pkgs;
+          attrs.buildInputs
+          ++ [
+            cabal-install
+          ];
+      });
+
+      checks.default = script-check;
+    });
 
   # --- Flake Local Nix Configuration ----------------------------
   nixConfig = {
