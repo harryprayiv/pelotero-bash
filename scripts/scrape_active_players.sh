@@ -21,7 +21,7 @@ url="https://statsapi.mlb.com/api/v1/sports/1/players?activeStatus=ACTIVE&season
 raw_json=$(curl -s "$url")
 
 # Transform the JSON structure and filter out the necessary data
-sorted_json=$(echo "$raw_json" | jq '[.people[] | {id, useName, useLastName, nameSlug, currentTeam: {id: .currentTeam.id}, primaryPosition: {code: .primaryPosition.code, abbreviation: .primaryPosition.abbreviation}, batSide: {code: .batSide.code}, pitchHand: {code: .pitchHand.code}, active}]')
+sorted_json=$(echo "$raw_json" | jq '[.people[] | {id, useName, useLastName, nameSlug, currentTeam: .currentTeam.id, primaryPosition: .primaryPosition.code, batSide: .batSide.code, pitchHand: .pitchHand.code, active}]')
 transformed_json=$(echo "{\"people\": $sorted_json}" | jq 'reduce .people[] as $person ({}; .[$person.id | tostring] = $person)')
 
 # Generate the checksum for the transformed content using SHA-256

@@ -82,7 +82,7 @@ while [ "$current_ts" -le "$end_ts" ]; do
     done
 
     # Generate JSON string from the games_status associative array
-    games_status_json="{"
+    games_status_json="{\"games\":{"
     first=1
     for key in "${!games_status[@]}"; do
       if [ "$first" -ne 1 ]; then
@@ -91,8 +91,9 @@ while [ "$current_ts" -le "$end_ts" ]; do
       games_status_json+="\"$key\":\"${games_status[$key]}\""
       first=0
     done
-    games_status_json+="}"
-    day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "{\"games\": $games_status_json}"))
+    games_status_json+="}}"
+
+    day_summed_data=$(jq -s 'reduce .[] as $item ({}; . * $item)' <(echo "$day_summed_data") <(echo "$games_status_json"))
 
     # Define the output filename
     summed_file="$output_folder/$(date -d "$current_date" +%Y_%m_%d).json"
@@ -116,8 +117,9 @@ while [ "$current_ts" -le "$end_ts" ]; do
         fi
     fi
 
-    # Append the checksum to the JSON content
-    day_summed_data=$(echo "$day_summed_data" | jq --arg checksum "$checksum" '. + {checksum: $checksum}')
+    # Append the checksum and date to the JSON content
+    formatted_date=$(date -d "$current_date" +%Y_%m_%d)
+    day_summed_data=$(echo "$day_summed_data" | jq --arg checksum "$checksum" --arg date "$formatted_date" '. + {checksum: $checksum, date: $date}')
 
     echo "$day_summed_data" > "$summed_file"
 
