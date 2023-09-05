@@ -45,7 +45,7 @@ while [ "$current_ts" -le "$end_ts" ]; do
   echo "Processing $current_date"
 
   # Create a folder for the current date
-  output_folder="scrapedData"
+  output_folder="scrapedData/stats"
   mkdir -p "$output_folder"
 
   # Fetch the JSON file with the game data
