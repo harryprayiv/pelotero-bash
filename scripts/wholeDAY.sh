@@ -25,7 +25,7 @@ flattenGameData() {
       to_entries[] |
       select(.value.allPositions != null) |
       {(.value.person.id | tostring): {
-        id: .value.person.id,
+        player_id: .value.person.id,
         fullName: .value.person.fullName,
         stats: {
           ($game_id): {
