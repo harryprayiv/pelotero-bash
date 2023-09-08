@@ -32,8 +32,24 @@ flattenGameData() {
             parentTeamId: .value.parentTeamId,
             allPositions: [.value.allPositions[] | .code | tonumber],
             status: .value.status.code,
-            batting: (if .value.stats.batting != null then .value.stats.batting | del(.note, .summary, .stolenBasePercentage, .atBatsPerHomeRun) else null end),
-            pitching: (if .value.stats.pitching != null then .value.stats.pitching | del(.note, .summary, .stolenBasePercentage, .strikePercentage, .homeRunsPer9, .runsScoredPer9) else null end)
+            batting: (
+              if .value.stats.batting != null then 
+                .value.stats.batting 
+                | del(.note, .summary, .stolenBasePercentage, .atBatsPerHomeRun) 
+                | with_entries(.key |= "bat_" + .)
+              else 
+                null 
+              end
+            ),
+            pitching: (
+              if .value.stats.pitching != null then 
+                .value.stats.pitching 
+                | del(.note, .summary, .stolenBasePercentage, .strikePercentage, .homeRunsPer9, .runsScoredPer9) 
+                | with_entries(.key |= "pit_" + .)
+              else 
+                null 
+              end
+            )
           }
         }
       }}
